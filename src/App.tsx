@@ -45,6 +45,8 @@ import { ptBR } from 'date-fns/locale';
 
 import { checkSupabaseConnection, supabase } from './lib/supabase';
 import { supabaseService } from './lib/supabaseService';
+import { getSubscriptionStatus } from './lib/subscription';
+import { UpgradePrompt } from './components/UpgradePrompt';
 
 // --- Components ---
 
@@ -414,11 +416,20 @@ const Dashboard = () => {
   const [dailyGoalInput, setDailyGoalInput] = useState('');
   const [savingGoal, setSavingGoal] = useState(false);
   const [customDailyGoal, setCustomDailyGoal] = useState<number | null>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   const fetchDashboardData = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      const { data: { user: authUser } } = await supabase.auth.getUser();
+      if (!authUser) return;
+
+      const { data: userData } = await supabase
+        .from('users')
+        .select('*')
+        .eq('id', authUser.id)
+        .single();
+
+      setUser(userData);
 
       const today = new Date().toISOString().split('T')[0];
 
@@ -511,8 +522,16 @@ const Dashboard = () => {
   const metaDiaria = customDailyGoal || (settings ? settings.monthly_goal / settings.work_days_month : 0);
   const progressoMeta = today ? (today.profit / metaDiaria) * 100 : 0;
 
+  const subStatus = getSubscriptionStatus(user);
+
   return (
     <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-6 pb-24 md:pb-8">
+      {user?.plan !== 'pro' && (
+        <UpgradePrompt
+          daysRemaining={subStatus.daysRemaining}
+          isExpired={subStatus.isExpired}
+        />
+      )}
       <header className="flex justify-between items-end mb-2">
         <div>
           <div className="flex items-center gap-3 mb-1">
