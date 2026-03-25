@@ -1,7 +1,8 @@
-import React from 'react';
-import { Crown, AlertTriangle, CheckCircle } from 'lucide-react';
+import React, { useState } from 'react';
+import { Crown, AlertTriangle, CheckCircle, Loader2, LogOut } from 'lucide-react';
 import { motion } from 'motion/react';
 import { cn } from '../types';
+import { supabase } from '../lib/supabase';
 
 interface UpgradePromptProps {
     daysRemaining: number;
@@ -9,6 +10,51 @@ interface UpgradePromptProps {
 }
 
 export const UpgradePrompt = ({ daysRemaining, isExpired }: UpgradePromptProps) => {
+    const [loading, setLoading] = useState(false);
+
+    const handleUpgrade = async () => {
+        setLoading(true);
+        console.log('Iniciando checkout...');
+        try {
+            // Garante que a sessão esteja atualizada
+            const { data: { session: refreshedSession }, error: refreshError } = await supabase.auth.refreshSession();
+            if (refreshError) throw refreshError;
+
+            const session = refreshedSession || (await supabase.auth.getSession()).data.session;
+
+            if (!session) {
+                alert('Sessão não encontrada. Por favor, faça login novamente.');
+                return;
+            }
+
+            console.log('JWT Token (primeiros 15 caracteres):', session.access_token.substring(0, 15));
+            console.log('Anon Key ativa (primeiros 10):', import.meta.env.VITE_SUPABASE_ANON_KEY?.substring(0, 10));
+            console.log('Chamando Edge Function V2 via invoke...');
+            const { data, error } = await supabase.functions.invoke('checkout-v2');
+
+            if (error) {
+                console.error('Erro na Edge Function:', error);
+                throw new Error(error.message || 'Erro na comunicação com o servidor');
+            }
+
+            if (data?.url) {
+                window.location.href = data.url;
+            } else {
+                throw new Error('URL de checkout não retornada pelo servidor.');
+            }
+        } catch (err: any) {
+            console.error('Erro capturado no checkout:', err);
+
+            if (err.message?.includes('401') || err.message?.includes('JWT')) {
+                alert('Sua sessão expirou ou é inválida. Por favor, saia (Logout) e entre novamente no aplicativo.');
+            } else {
+                alert(`Erro ao iniciar assinatura: ${err.message || 'Erro desconhecido'}`);
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
+
     if (isExpired) {
         return (
             <motion.div
@@ -22,19 +68,30 @@ export const UpgradePrompt = ({ daysRemaining, isExpired }: UpgradePromptProps) 
                     </div>
                     <h2 className="text-3xl font-bold tracking-tight">Período de Teste Encerrado</h2>
                     <p className="text-white/60">
-                        Seu período de teste de 7 dias chegou ao fim. Assine agora para continuar tendo acesso total aos seus dados e ferramentas do DriverPRO.
+                        Seu período de teste de 7 dias chegou ao fim. Assine agora para continuar tendo acesso total aos seus dados e ferramentas do DriverHUB.
                     </p>
                     <div className="space-y-3 pt-4">
                         <button
-                            className="w-full py-4 bg-profit text-black font-bold rounded-2xl hover:bg-profit/90 transition-all flex items-center justify-center gap-2 text-lg shadow-lg shadow-profit/20"
-                            onClick={() => window.open('https://buy.stripe.com/SEU_LINK_AQUI', '_blank')}
+                            disabled={loading}
+                            className="w-full py-4 bg-profit text-black font-bold rounded-2xl hover:bg-profit/90 transition-all flex items-center justify-center gap-2 text-lg shadow-lg shadow-profit/20 disabled:opacity-50"
+                            onClick={handleUpgrade}
                         >
-                            <Crown size={20} />
-                            Assinar DriverPRO
+                            {loading ? <Loader2 className="animate-spin" size={20} /> : <Crown size={20} />}
+                            Assinar DriverHUB
                         </button>
                         <p className="text-[10px] text-white/30">
                             Assinatura mensal recorrente. Cancele quando quiser.
                         </p>
+                        <button
+                            onClick={async () => {
+                                await supabase.auth.signOut();
+                                window.location.href = '/';
+                            }}
+                            className="w-full py-3 bg-white/5 text-white/40 text-sm font-medium rounded-2xl hover:bg-white/10 transition-all flex items-center justify-center gap-2 mt-4"
+                        >
+                            <LogOut size={16} />
+                            Sair da Conta
+                        </button>
                     </div>
                 </div>
             </motion.div>
@@ -52,9 +109,11 @@ export const UpgradePrompt = ({ daysRemaining, isExpired }: UpgradePromptProps) 
                     </div>
                 </div>
                 <button
-                    className="px-4 py-2 bg-profit text-black text-xs font-bold rounded-xl hover:bg-profit/90 transition-all"
-                    onClick={() => window.open('https://buy.stripe.com/SEU_LINK_AQUI', '_blank')}
+                    disabled={loading}
+                    className="px-4 py-2 bg-profit text-black text-xs font-bold rounded-xl hover:bg-profit/90 transition-all disabled:opacity-50 flex items-center gap-2"
+                    onClick={handleUpgrade}
                 >
+                    {loading && <Loader2 className="animate-spin" size={14} />}
                     Assinar Agora
                 </button>
             </div>
@@ -71,9 +130,11 @@ export const UpgradePrompt = ({ daysRemaining, isExpired }: UpgradePromptProps) 
                 </div>
             </div>
             <button
-                className="px-4 py-2 bg-white/5 border border-white/10 text-white text-xs font-bold rounded-xl hover:bg-white/10 transition-all"
-                onClick={() => window.open('https://buy.stripe.com/SEU_LINK_AQUI', '_blank')}
+                disabled={loading}
+                className="px-4 py-2 bg-white/5 border border-white/10 text-white text-xs font-bold rounded-xl hover:bg-white/10 transition-all disabled:opacity-50 flex items-center gap-2"
+                onClick={handleUpgrade}
             >
+                {loading && <Loader2 className="animate-spin" size={14} />}
                 Ver Planos
             </button>
         </div>

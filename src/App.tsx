@@ -47,6 +47,7 @@ import { checkSupabaseConnection, supabase } from './lib/supabase';
 import { supabaseService } from './lib/supabaseService';
 import { getSubscriptionStatus } from './lib/subscription';
 import { UpgradePrompt } from './components/UpgradePrompt';
+import { SubscriptionSuccess, SubscriptionCancel } from './components/SubscriptionFeedback';
 
 // --- Components ---
 
@@ -190,7 +191,7 @@ const LoginPage = () => {
             <TrendingUp size={32} />
           </div>
           <h1 className="text-3xl font-bold tracking-tight">Bem-vindo de volta</h1>
-          <p className="text-white/40 mt-2">Entre na sua conta DriverPro</p>
+          <p className="text-white/40 mt-2">Entre na sua conta DriverHUB</p>
         </div>
 
         <Card className="space-y-6">
@@ -1368,7 +1369,7 @@ const Navigation = ({ user }: { user: User | null }) => {
           <div className="w-10 h-10 bg-profit rounded-xl flex items-center justify-center text-black">
             <TrendingUp size={24} />
           </div>
-          <span className="text-xl font-black tracking-tighter">DriverPro</span>
+          <span className="text-xl font-black tracking-tighter">DriverHUB</span>
         </div>
 
         <div className="flex-1 space-y-2">
@@ -1444,6 +1445,8 @@ export default function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register-account" element={<RegisterPage />} />
+          <Route path="/subscription/success" element={<SubscriptionSuccess />} />
+          <Route path="/subscription/cancel" element={<SubscriptionCancel />} />
           <Route path="/*" element={
             <div className="md:pl-64 min-h-screen">
               <Navigation user={user} />
