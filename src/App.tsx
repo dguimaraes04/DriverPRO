@@ -125,6 +125,12 @@ const LandingPage = () => {
           >
             Comece seu teste grátis
           </Link>
+          <Link
+            to="/login"
+            className="px-8 py-4 bg-white/5 border border-white/10 text-white font-bold rounded-xl hover:bg-white/10 transition-all"
+          >
+            Fazer Login
+          </Link>
         </div>
       </motion.div>
 
