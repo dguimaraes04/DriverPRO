@@ -103,7 +103,7 @@ const StatCard = ({ label, value, icon: Icon, colorClass, subValue }: { label: s
 
 const LandingPage = () => {
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6 text-center">
+    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_#132d24_0%,_#0a0a0a_100%)] flex flex-col items-center justify-center p-6 text-center">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -187,7 +187,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-6">
+    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_#132d24_0%,_#0a0a0a_100%)] flex items-center justify-center p-6">
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -303,7 +303,7 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-6">
+    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_#132d24_0%,_#0a0a0a_100%)] flex items-center justify-center p-6">
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -1419,7 +1419,7 @@ export default function App() {
 
   return (
     <Router>
-      <div className="min-h-screen bg-background text-primary-text selection:bg-profit/30">
+      <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_#132d24_0%,_#0a0a0a_100%)] text-primary-text selection:bg-profit/30">
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<LoginPage />} />
