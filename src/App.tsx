@@ -48,6 +48,7 @@ import { supabaseService } from './lib/supabaseService';
 import { getSubscriptionStatus } from './lib/subscription';
 import { UpgradePrompt } from './components/UpgradePrompt';
 import { SubscriptionSuccess, SubscriptionCancel } from './components/SubscriptionFeedback';
+import logo from './assets/logo.png';
 
 // --- Components ---
 
@@ -193,8 +194,8 @@ const LoginPage = () => {
         className="w-full max-w-md"
       >
         <div className="text-center mb-10">
-          <div className="w-16 h-16 bg-profit rounded-2xl flex items-center justify-center text-black mx-auto mb-4 shadow-lg shadow-profit/20">
-            <TrendingUp size={32} />
+          <div className="w-16 h-16 bg-profit rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-profit/20 overflow-hidden">
+            <img src={logo} className="w-12 h-12 object-contain" alt="Logo" />
           </div>
           <h1 className="text-3xl font-bold tracking-tight">Bem-vindo de volta</h1>
           <p className="text-white/40 mt-2">Entre na sua conta DriverHUB</p>
@@ -309,8 +310,8 @@ const RegisterPage = () => {
         className="w-full max-w-md"
       >
         <div className="text-center mb-10">
-          <div className="w-16 h-16 bg-profit rounded-2xl flex items-center justify-center text-black mx-auto mb-4 shadow-lg shadow-profit/20">
-            <TrendingUp size={32} />
+          <div className="w-16 h-16 bg-profit rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-profit/20 overflow-hidden">
+            <img src={logo} className="w-12 h-12 object-contain" alt="Logo" />
           </div>
           <h1 className="text-3xl font-bold tracking-tight">Criar sua conta</h1>
           <p className="text-white/40 mt-2">Inicie seu teste grátis de 7 dias</p>
