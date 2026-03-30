@@ -113,18 +113,18 @@ const LandingPage = () => {
           <TrendingUp size={14} />
           NOVO: AVALIADOR DE CORRIDAS
         </div>
-        <h1 className="text-5xl md:text-7xl font-bold tracking-tighter mb-6 leading-tight">
-          Controle seu lucro como um <span className="text-profit">profissional.</span>
+        <h1 className="text-5xl md:text-6xl font-bold tracking-tighter mb-6 leading-tight max-w-2xl mx-auto">
+          Descubra se vale a pena cada corrida e aumente seus ganhos como <span className="text-profit">motorista de app</span>
         </h1>
         <p className="text-lg text-white/60 mb-10 max-w-lg mx-auto">
-          Descubra quanto você realmente ganha por dia, por hora e por corrida. Pare de trabalhar no escuro.
+          Pare de perder dinheiro. Use dados reais pra decidir quando rodar e quais corridas aceitar.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link
             to="/register-account"
-            className="px-8 py-4 bg-white text-black font-bold rounded-xl hover:bg-white/90 transition-all"
+            className="px-8 py-4 bg-white text-black font-bold rounded-xl hover:bg-white/90 transition-all shadow-xl shadow-white/5"
           >
-            Comece seu teste grátis
+            Testar grátis agora
           </Link>
           <Link
             to="/login"
@@ -133,9 +133,36 @@ const LandingPage = () => {
             Fazer Login
           </Link>
         </div>
+
+        <div className="mt-8 text-xs text-white/30 flex items-center justify-center gap-2">
+          <CheckCircle size={14} className="text-profit" />
+          Criado por motorista que entende a realidade das corridas
+        </div>
       </motion.div>
 
-      <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl w-full">
+      <div className="mt-20 max-w-lg mx-auto text-left w-full">
+        <Card className="border-profit/10 bg-profit/[0.02]">
+          <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
+            🔥 Para quem é o DriverHub?
+          </h2>
+          <ul className="space-y-4">
+            {[
+              "Motoristas da Uber e 99",
+              "Quem quer aumentar o lucro",
+              "Quem não sabe se está ganhando ou perdendo dinheiro"
+            ].map((text, i) => (
+              <li key={i} className="flex items-center gap-3 text-white/80">
+                <div className="w-5 h-5 rounded-full bg-profit/10 flex items-center justify-center flex-shrink-0">
+                  <div className="w-1.5 h-1.5 rounded-full bg-profit" />
+                </div>
+                <span className="text-sm md:text-base">{text}</span>
+              </li>
+            ))}
+          </ul>
+        </Card>
+      </div>
+
+      <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl w-full">
         {[
           { title: "Lucro Real", desc: "Cálculo automático descontando combustível e taxas." },
           { title: "Ganho por Hora", desc: "Saiba se seu tempo está sendo bem recompensado." },
