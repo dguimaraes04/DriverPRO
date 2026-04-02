@@ -1339,6 +1339,7 @@ const SettingsPage = () => {
 
 const Navigation = ({ user }: { user: User | null }) => {
   const location = useLocation();
+  const status = user ? getSubscriptionStatus(user) : null;
   const navItems = [
     { path: '/dashboard', icon: LayoutDashboard, label: 'Painel' },
     { path: '/register', icon: PlusCircle, label: 'Registrar' },
@@ -1410,7 +1411,15 @@ const Navigation = ({ user }: { user: User | null }) => {
             </div>
             <div className="flex-1 overflow-hidden">
               <p className="text-sm font-bold truncate">{user?.name || "Motorista Pro"}</p>
-              <p className="text-[10px] text-white/40 truncate">Plano {user?.plan || "Pro"} • 7 dias trial</p>
+              <p className="text-[10px] text-white/40 truncate">
+                {status?.isPro ? (
+                  <span className="text-profit font-bold">Plano PRO</span>
+                ) : status?.isTrial ? (
+                  `Plano Trial • ${status.daysRemaining} dias trial`
+                ) : (
+                  `Plano Expirado`
+                )}
+              </p>
             </div>
           </Link>
         </div>
