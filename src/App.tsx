@@ -409,14 +409,10 @@ const RegisterPage = () => {
 
     const normalizedEmail = formData.email.trim().toLowerCase();
 
-    // Verificação antecipada para evitar duplicidade
-    const { data: existingUser } = await supabase
-      .from('users')
-      .select('id')
-      .eq('email', normalizedEmail)
-      .maybeSingle();
+    // Verificação antecipada para evitar duplicidade (via RPC para contornar bloqueio de RLS)
+    const { data: emailExists } = await supabase.rpc('check_email_exists', { lookup_email: normalizedEmail });
 
-    if (existingUser) {
+    if (emailExists) {
       setError("Este e-mail já está em uso por outra conta.");
       setLoading(false);
       return;
@@ -427,6 +423,14 @@ const RegisterPage = () => {
       formData.password,
       formData.name
     );
+
+    // O Supabase às vezes retorna sucesso (200) sem falhar se o e-mail existir, para evitar enumeração.
+    // Mas ele avisa enviando um array de identities vazio. Vamos verificar isso por segurança dupla.
+    if (data?.user && data.user.identities && data.user.identities.length === 0) {
+      setError("Este e-mail já está em uso por outra conta.");
+      setLoading(false);
+      return;
+    }
 
     if (error) {
       setError(error.message);
