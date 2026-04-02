@@ -49,6 +49,8 @@ import { getSubscriptionStatus } from './lib/subscription';
 import { UpgradePrompt } from './components/UpgradePrompt';
 import { SubscriptionSuccess, SubscriptionCancel } from './components/SubscriptionFeedback';
 import logo from './assets/logo.png';
+import Terms from './pages/Terms';
+import Privacy from './pages/Privacy';
 
 // --- Components ---
 
@@ -176,6 +178,14 @@ const LandingPage = () => {
           </div>
         ))}
       </div>
+
+      <footer className="mt-20 py-8 border-t border-white/5 w-full max-w-5xl flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] text-white/30 uppercase font-bold tracking-widest">
+        <span>© 2026 DriverHUB - Todos os direitos reservados</span>
+        <div className="flex gap-6">
+          <Link to="/termos" className="hover:text-profit transition-colors">Termos de Uso</Link>
+          <Link to="/privacidade" className="hover:text-profit transition-colors">Privacidade</Link>
+        </div>
+      </footer>
     </div>
   );
 };
@@ -406,6 +416,9 @@ const RegisterPage = () => {
             </button>
           </form>
 
+          <p className="text-[10px] text-white/30 text-center leading-relaxed">
+            Ao criar sua conta, você concorda com nossos <Link to="/termos" className="underline hover:text-profit">Termos de Uso</Link> e <Link to="/privacidade" className="underline hover:text-profit">Política de Privacidade</Link>.
+          </p>
         </Card>
 
         <p className="text-center mt-8 text-sm text-white/40">
@@ -1460,6 +1473,8 @@ export default function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register-account" element={<RegisterPage />} />
+          <Route path="/termos" element={<Terms />} />
+          <Route path="/privacidade" element={<Privacy />} />
           <Route path="/subscription/success" element={<SubscriptionSuccess />} />
           <Route path="/subscription/cancel" element={<SubscriptionCancel />} />
           <Route path="/*" element={

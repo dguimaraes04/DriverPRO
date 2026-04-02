@@ -88,6 +88,10 @@ export const UpgradePrompt = ({ daysRemaining, isExpired }: UpgradePromptProps) 
                             <LogOut size={16} />
                             Sair da Conta
                         </button>
+
+                        <div className="pt-2">
+                           <a href="/termos" target="_blank" rel="noopener noreferrer" className="text-[10px] text-white/20 hover:text-white transition-colors">Termos de Uso e Cancelamento</a>
+                        </div>
                     </div>
                 </div>
             </motion.div>
