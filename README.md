@@ -1,20 +1,22 @@
 <div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+  <img width="1200" height="475" alt="DriverHUB Banner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
 </div>
 
-# Run and deploy your AI Studio app
+# DriverHUB
 
-This contains everything you need to run your app locally.
+O painel financeiro definitivo para motoristas de aplicativo. Calcule seu lucro real, defina metas diárias e tome decisões inteligentes baseadas em dados em tempo real.
 
-View your app in AI Studio: https://ai.studio/apps/9e07f2da-097b-4f26-9129-d749652528ba
+## Como rodar o projeto localmente
 
-## Run Locally
+**Requisitos:** Node.js v18+
 
-**Prerequisites:**  Node.js
-
-
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+1. Instale as dependências:
+   ```bash
+   npm install
+   ```
+2. Configure suas variáveis de ambiente:
+   Renomeie `.env.example` para `.env` e preencha as variáveis de ambiente necessárias (Supabase, Stripe, etc).
+3. Inicie a aplicação:
+   ```bash
+   npm run dev
+   ```
