@@ -18,7 +18,9 @@ import {
   History,
   Save,
   CheckCircle,
-  HelpCircle
+  HelpCircle,
+  Copy,
+  Mail
 } from 'lucide-react';
 import {
   BrowserRouter as Router,
@@ -80,18 +82,83 @@ const SupabaseStatus = () => {
   );
 };
 
-const SupportButton = () => (
-  <a 
-    href="mailto:equipedriverhub@gmail.com"
+const SupportButton = ({ onClick }: { onClick: () => void }) => (
+  <button 
+    onClick={onClick}
     className="fixed bottom-24 md:bottom-8 right-6 z-[100] flex items-center justify-center w-14 h-14 bg-profit text-black rounded-full shadow-2xl hover:scale-110 transition-all hover:bg-profit/90 group"
     title="Falar com suporte"
   >
     <HelpCircle size={28} />
-    <span className="absolute right-16 bg-card text-white text-[10px] uppercase font-bold py-1.5 px-3 rounded-lg border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+    <span className="absolute right-16 bg-card text-white text-[10px] uppercase font-bold py-1.5 px-3 rounded-lg border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none text-center">
       Falar com Suporte
     </span>
-  </a>
+  </button>
 );
+
+const SupportModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) => {
+  const [copied, setCopied] = useState(false);
+  const email = "equipedriverhub@gmail.com";
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(email);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="w-full max-w-sm glass p-8 rounded-3xl border border-white/10 shadow-2xl text-center space-y-6"
+      >
+        <div className="flex justify-between items-start mb-2">
+          <div className="p-3 rounded-2xl bg-profit/10 text-profit mx-auto">
+            <HelpCircle size={32} />
+          </div>
+          <button onClick={onClose} className="absolute top-6 right-6 text-white/40 hover:text-white transition-colors">
+            <X size={24} />
+          </button>
+        </div>
+
+        <div className="space-y-2">
+          <h2 className="text-2xl font-bold tracking-tight">Suporte DriverHUB</h2>
+          <p className="text-white/40 text-sm">Como podemos te ajudar hoje?</p>
+        </div>
+
+        <div className="space-y-3">
+          <div className="bg-white/5 border border-white/10 rounded-2xl p-4 flex items-center justify-between">
+            <span className="text-sm font-medium truncate max-w-[180px]">{email}</span>
+            <button 
+              onClick={handleCopy}
+              className={cn(
+                "p-2 rounded-xl transition-all flex items-center gap-2",
+                copied ? "bg-profit text-black" : "bg-white/10 text-white/60 hover:text-white"
+              )}
+            >
+              <Copy size={16} />
+              {copied && <span className="text-[10px] font-bold uppercase">Copiado</span>}
+            </button>
+          </div>
+
+          <a 
+            href={`mailto:${email}`}
+            className="w-full py-4 bg-white text-black font-bold rounded-2xl hover:bg-white/90 transition-all flex items-center justify-center gap-2 shadow-lg shadow-white/5"
+          >
+            <Mail size={18} />
+            Enviar E-mail
+          </a>
+
+          <p className="text-[10px] text-white/30 leading-relaxed px-4">
+            Nosso horário de resposta é de Segunda a Sexta, das 9h às 18h.
+          </p>
+        </div>
+      </motion.div>
+    </div>
+  );
+};
 
 const Card = ({ children, className, title }: { children: React.ReactNode, className?: string, title?: string }) => (
   <div className={cn("glass rounded-2xl p-5", className)}>
@@ -1373,7 +1440,7 @@ const Navigation = ({ user }: { user: User | null }) => {
     { path: '/evaluator', icon: Calculator, label: 'Avaliar' },
     { path: '/profile', icon: UserIcon, label: 'Perfil' },
     { path: '/settings', icon: SettingsIcon, label: 'Ajustes' },
-    { path: 'mailto:equipedriverhub@gmail.com', icon: HelpCircle, label: 'Suporte', isExternal: true },
+    { path: 'support', icon: HelpCircle, label: 'Suporte', isSupport: true },
   ];
 
   return (
@@ -1382,16 +1449,16 @@ const Navigation = ({ user }: { user: User | null }) => {
       <nav className="md:hidden fixed bottom-0 left-0 right-0 glass border-t border-white/5 px-6 py-3 z-50 flex justify-between items-center">
         {navItems.map((item) => {
           const isActive = location.pathname === item.path;
-          if (item.isExternal) {
+          if (item.isSupport) {
             return (
-              <a
+              <button
                 key={item.label}
-                href={item.path}
+                onClick={() => (window as any).toggleSupportModal?.()}
                 className="flex flex-col items-center gap-1 text-white/40 hover:text-profit transition-all"
               >
                 <item.icon size={24} />
                 <span className="text-[10px] font-bold uppercase tracking-tighter">{item.label}</span>
-              </a>
+              </button>
             );
           }
           return (
@@ -1422,16 +1489,16 @@ const Navigation = ({ user }: { user: User | null }) => {
         <div className="flex-1 space-y-2">
           {navItems.map((item) => {
             const isActive = location.pathname === item.path;
-            if (item.isExternal) {
+            if (item.isSupport) {
               return (
-                <a
+                <button
                   key={item.label}
-                  href={item.path}
-                  className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium text-white/60 hover:bg-white/5 hover:text-white"
+                  onClick={() => (window as any).toggleSupportModal?.()}
+                  className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium text-white/60 hover:bg-white/5 hover:text-white w-full text-left"
                 >
                   <item.icon size={20} />
                   {item.label}
-                </a>
+                </button>
               );
             }
             return (
@@ -1482,6 +1549,12 @@ const Navigation = ({ user }: { user: User | null }) => {
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
+  const [showSupport, setShowSupport] = useState(false);
+
+  // Expondo para o window para facilitar acesso fora do componente principal se necessário
+  useEffect(() => {
+    (window as any).toggleSupportModal = () => setShowSupport(true);
+  }, []);
 
   const fetchUser = async () => {
     const { data: { session } } = await supabase.auth.getSession();
@@ -1531,7 +1604,8 @@ export default function App() {
             </div>
           } />
         </Routes>
-        <SupportButton />
+        <SupportButton onClick={() => setShowSupport(true)} />
+        <SupportModal isOpen={showSupport} onClose={() => setShowSupport(false)} />
       </div>
     </Router>
   );
