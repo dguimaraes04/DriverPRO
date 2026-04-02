@@ -17,7 +17,8 @@ import {
   Camera,
   History,
   Save,
-  CheckCircle
+  CheckCircle,
+  HelpCircle
 } from 'lucide-react';
 import {
   BrowserRouter as Router,
@@ -78,6 +79,19 @@ const SupabaseStatus = () => {
     </div>
   );
 };
+
+const SupportButton = () => (
+  <a 
+    href="mailto:equipedriverhub@gmail.com"
+    className="fixed bottom-24 md:bottom-8 right-6 z-[100] flex items-center justify-center w-14 h-14 bg-profit text-black rounded-full shadow-2xl hover:scale-110 transition-all hover:bg-profit/90 group"
+    title="Falar com suporte"
+  >
+    <HelpCircle size={28} />
+    <span className="absolute right-16 bg-card text-white text-[10px] uppercase font-bold py-1.5 px-3 rounded-lg border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+      Falar com Suporte
+    </span>
+  </a>
+);
 
 const Card = ({ children, className, title }: { children: React.ReactNode, className?: string, title?: string }) => (
   <div className={cn("glass rounded-2xl p-5", className)}>
@@ -1359,6 +1373,7 @@ const Navigation = ({ user }: { user: User | null }) => {
     { path: '/evaluator', icon: Calculator, label: 'Avaliar' },
     { path: '/profile', icon: UserIcon, label: 'Perfil' },
     { path: '/settings', icon: SettingsIcon, label: 'Ajustes' },
+    { path: 'mailto:equipedriverhub@gmail.com', icon: HelpCircle, label: 'Suporte', isExternal: true },
   ];
 
   return (
@@ -1367,6 +1382,18 @@ const Navigation = ({ user }: { user: User | null }) => {
       <nav className="md:hidden fixed bottom-0 left-0 right-0 glass border-t border-white/5 px-6 py-3 z-50 flex justify-between items-center">
         {navItems.map((item) => {
           const isActive = location.pathname === item.path;
+          if (item.isExternal) {
+            return (
+              <a
+                key={item.label}
+                href={item.path}
+                className="flex flex-col items-center gap-1 text-white/40 hover:text-profit transition-all"
+              >
+                <item.icon size={24} />
+                <span className="text-[10px] font-bold uppercase tracking-tighter">{item.label}</span>
+              </a>
+            );
+          }
           return (
             <Link
               key={item.path}
@@ -1395,6 +1422,18 @@ const Navigation = ({ user }: { user: User | null }) => {
         <div className="flex-1 space-y-2">
           {navItems.map((item) => {
             const isActive = location.pathname === item.path;
+            if (item.isExternal) {
+              return (
+                <a
+                  key={item.label}
+                  href={item.path}
+                  className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium text-white/60 hover:bg-white/5 hover:text-white"
+                >
+                  <item.icon size={20} />
+                  {item.label}
+                </a>
+              );
+            }
             return (
               <Link
                 key={item.path}
@@ -1492,6 +1531,7 @@ export default function App() {
             </div>
           } />
         </Routes>
+        <SupportButton />
       </div>
     </Router>
   );
