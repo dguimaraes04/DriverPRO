@@ -283,7 +283,8 @@ const LoginPage = () => {
     setLoading(true);
     setError('');
 
-    const { data, error } = await supabaseService.signIn(email, password);
+    const normalizedEmail = email.trim().toLowerCase();
+    const { data, error } = await supabaseService.signIn(normalizedEmail, password);
 
     if (error) {
       setError(error.message);
@@ -406,8 +407,23 @@ const RegisterPage = () => {
     setLoading(true);
     setError('');
 
+    const normalizedEmail = formData.email.trim().toLowerCase();
+
+    // Verificação antecipada para evitar duplicidade
+    const { data: existingUser } = await supabase
+      .from('users')
+      .select('id')
+      .eq('email', normalizedEmail)
+      .maybeSingle();
+
+    if (existingUser) {
+      setError("Este e-mail já está em uso por outra conta.");
+      setLoading(false);
+      return;
+    }
+
     const { data, error } = await supabaseService.signUp(
-      formData.email,
+      normalizedEmail,
       formData.password,
       formData.name
     );
