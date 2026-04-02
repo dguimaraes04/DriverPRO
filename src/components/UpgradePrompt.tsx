@@ -14,7 +14,6 @@ export const UpgradePrompt = ({ daysRemaining, isExpired }: UpgradePromptProps) 
 
     const handleUpgrade = async () => {
         setLoading(true);
-        console.log('Iniciando checkout...');
         try {
             // Garante que a sessão esteja atualizada
             const { data: { session: refreshedSession }, error: refreshError } = await supabase.auth.refreshSession();
@@ -27,9 +26,6 @@ export const UpgradePrompt = ({ daysRemaining, isExpired }: UpgradePromptProps) 
                 return;
             }
 
-            console.log('JWT Token (primeiros 15 caracteres):', session.access_token.substring(0, 15));
-            console.log('Anon Key ativa (primeiros 10):', import.meta.env.VITE_SUPABASE_ANON_KEY?.substring(0, 10));
-            console.log('Chamando Edge Function V2 via invoke...');
             const { data, error } = await supabase.functions.invoke('checkout-v2');
 
             if (error) {
